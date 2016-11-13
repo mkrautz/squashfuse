@@ -14,6 +14,7 @@ bin_PROGRAMS =
 noinst_PROGRAMS =
 
 noinst_LTLIBRARIES = libsquashfuse.la
+noinst_LTLIBRARIES += libsquashfuse_ll.la
 
 # Main library: libsquashfuse
 libsquashfuse_la_SOURCES = swap.c cache.c table.c dir.c file.c fs.c \
@@ -46,10 +47,9 @@ endif
 
 # Low-level squashfuse_ll, if supported
 if SQ_WANT_LOWLEVEL
-bin_PROGRAMS += squashfuse_ll
-squashfuse_ll_SOURCES = ll.c ll_inode.c nonstd-daemon.c ll.h
-squashfuse_ll_CPPFLAGS = $(FUSE_CPPFLAGS)
-squashfuse_ll_LDADD = libsquashfuse.la libfuseprivate.la $(COMPRESSION_LIBS) \
+libsquashfuse_ll_la_SOURCES = ll.c ll_inode.c nonstd-daemon.c ll.h
+libsquashfuse_ll_la_CPPFLAGS = $(FUSE_CPPFLAGS)
+libsquashfuse_ll_la_LIBADD = libsquashfuse.la libfuseprivate.la $(COMPRESSION_LIBS) \
   $(FUSE_LIBS)
 
 noinst_LTLIBRARIES += libfuseprivate.la

@@ -390,7 +390,7 @@ static sqfs_ll *sqfs_ll_open(const char *path, size_t offset) {
 	return NULL;
 }
 
-int main(int argc, char *argv[]) {
+int fusefs_main(int argc, char *argv[], void (*mounted) (void)) {
 	struct fuse_args args;
 	sqfs_opts opts;
 	
@@ -451,6 +451,8 @@ int main(int argc, char *argv[]) {
 				if (sqfs_ll_daemonize(fg) != -1) {
 					if (fuse_set_signal_handlers(se) != -1) {
 						fuse_session_add_chan(se, ch.ch);
+				if (mounted)
+				  mounted ();
 						/* FIXME: multithreading */
 						err = fuse_session_loop(se);
 						fuse_remove_signal_handlers(se);
@@ -466,6 +468,8 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	fuse_opt_free_args(&args);
+	if (mounted)
+	  rmdir (mountpoint);
 	free(ll);
 	free(mountpoint);
 	
